@@ -5,9 +5,9 @@ This application was developed based on the model found here https://github.com/
 This app evaluates the cost-effectiveness of implementing an intervention (example with maintaining an active microbiology laboratory for blood culture testing in healthcare settings). The model uses a decision tree approach to compare strategies with and without active microbiology services.
 
 ### App files are found in in the CostEffectivenessAnalysis_Shiny folder.
-Download this code my clicking on the green code button on the top right and select 'Download ZIP'. Unzip the file and then navigate to the CostEffectivenessAnalysis_Shiny folder.
+Download this code by clicking on the green code button on the top right of this page (https://github.com/Cherrylim128/economic_evaluation_tutorial/tree/oraya_shiny) and select 'Download ZIP'. Unzip the file and then navigate to the CostEffectivenessAnalysis_Shiny folder.
 
-In this folder, run the app.R file to launch the app created for the practical_cea_decisiontree.R file
+In this folder, run the app.R file to launch the app created for the practical_cea_decisiontree.R file. If you get errors, try setting your working directory to where your practical_cea_decisiontree.R file is stored ( example : uncomment the setwd("enter_your_path_to_file") line and enter the path.)
 
 
 
