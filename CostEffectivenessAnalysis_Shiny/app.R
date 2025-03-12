@@ -448,11 +448,11 @@ ui <- dashboardPage(
             width = 12,
             collapsible = TRUE,
             column(
-              width = 4,
+              width = 12,
               numericInput("p.CefGen_nocul_deter_stepup_nochange", "Probability within the “no active microbiology laboratory services” arm of the decision tree, that a patient with suspected primary BSI and clinical condition deteriorates, and subsequently steps up from the empiric antibiotic treatment.", value = 0.70, min = 0, max = 1, step = 0.01)
             ),
             column(
-              width = 4,
+              width = 12,
               numericInput("p.CefGen_nocul_impro_stepdown_nochange", "Probability within the “no active microbiology laboratory services” arm of the decision tree, that a patient with suspected primary BSI and clinical condition improves, and subsequently steps down from the empiric antibiotic treatment.", value = 0.20, min = 0, max = 1, step = 0.01)
             )#,
             # column(
@@ -697,31 +697,25 @@ server <- function(input, output, session) {
       #p.CefGen_culpos_stepdown = input$p.CefGen_culpos_stepdown
       
       
-      p.CefGen_culpos_nochange = (input$kleb_prop_bsi*input$kleb_prop_line + input$SA_prop_bsi*input$SA_prop_line + input$PA_prop_bsi*input$PA_prop_line + input$SP_prop_bsi*input$SP_prop_line + 
+      p.CefGen_culpos_nochange = (input$kleb_prop_bsi*input$kleb_prop_line + input$SA_prop_bsi*input$SA_prop_line + input$PA_prop_bsi*input$PA_prop_line + input$SP_prop_bsi*input$SP_prop_line +
                                     input$NM_prop_bsi*input$NM_prop_line + input$AB_prop_bsi*input$AB_prop_line + input$EC_prop_bsi*input$EC_prop_line),
       
-      #here we edit the step up fxn to be the sum of the 
-      p.CefGen_culpos_stepup = 1- (input$kleb_prop_bsi*input$kleb_prop_line + input$SA_prop_bsi*input$SA_prop_line + input$PA_prop_bsi*input$PA_prop_line + input$SP_prop_bsi*input$SP_prop_line + 
-                                     input$NM_prop_bsi*input$NM_prop_line + input$AB_prop_bsi*input$AB_prop_line + input$EC_prop_bsi*input$EC_prop_line), 
+      #here we edit the step up fxn to be the sum of the
+      p.CefGen_culpos_stepup = 1- (input$kleb_prop_bsi*input$kleb_prop_line + input$SA_prop_bsi*input$SA_prop_line + input$PA_prop_bsi*input$PA_prop_line + input$SP_prop_bsi*input$SP_prop_line +
+                                     input$NM_prop_bsi*input$NM_prop_line + input$AB_prop_bsi*input$AB_prop_line + input$EC_prop_bsi*input$EC_prop_line),
+      
+      
+      
       #p.CefGen_culpos_stepup = input$p.CefGen_culpos_stepup,
       #p.CefGen_culpos_nochange = 1- input$p.CefGen_culpos_stepup, 
       
       ## Branches of culture negatives 
       p.CefGen_bact_culneg_deter = input$p.CefGen_bact_culneg_deter,
       
-      #setting this to the same setup value for now 
-      # p.CefGen_bact_culneg_deter = 1- (input$kleb_prop_bsi + input$SA_prop_bsi + input$PA_prop_bsi + input$SP_prop_bsi + 
-      #       input$NM_prop_bsi + input$AB_prop_bsi + input$EC_prop_bsi)*(input$kleb_prop_line + input$SA_prop_line + input$PA_prop_line + input$SP_prop_line + 
-      #                                                                     input$NM_prop_line + input$AB_prop_line + input$EC_prop_line),
       p.CefGen_bact_culneg_impro = 1 - input$p.CefGen_bact_culneg_deter,
       
       #p.CefGen_bact_culneg_nocha = 1 - input$p.CefGen_bact_culneg_deter - input$p.CefGen_bact_culneg_impro,
       
-      #setting this to the same setup value for now 
-      # p.CefGen_nobact_culneg_deter = 1- (input$kleb_prop_bsi + input$SA_prop_bsi + input$PA_prop_bsi + input$SP_prop_bsi + 
-      #                                    input$NM_prop_bsi + input$AB_prop_bsi + input$EC_prop_bsi)*(input$kleb_prop_line + input$SA_prop_line + input$PA_prop_line + input$SP_prop_line + 
-      #                                                                                                  input$NM_prop_line + input$AB_prop_line + input$EC_prop_line),
-      # 
       p.CefGen_nobact_culneg_deter = input$p.CefGen_nobact_culneg_deter,
       p.CefGen_nobact_culneg_impro = 1 - input$p.CefGen_nobact_culneg_deter,
       #p.CefGen_nobact_culneg_nocha = 1 - input$p.CefGen_nobact_culneg_deter - input$p.CefGen_nobact_culneg_impro,
@@ -740,12 +734,15 @@ server <- function(input, output, session) {
       #p.culneg_nocha_stepup = input$p.culneg_nocha_stepup_nochange,
       #p.culneg_nocha_nochange = 1-input$p.culneg_nocha_stepup_nochange,
       
-      ## Branches of no culture performed
-      p.CefGen_bact_nocul_deter = 1- (input$kleb_prop_bsi*input$kleb_prop_line + input$SA_prop_bsi*input$SA_prop_line + input$PA_prop_bsi*input$PA_prop_line + input$SP_prop_bsi*input$SP_prop_line + 
+      # Branches of no culture performed 
+      p.CefGen_bact_nocul_deter = 1- (input$kleb_prop_bsi*input$kleb_prop_line + input$SA_prop_bsi*input$SA_prop_line + input$PA_prop_bsi*input$PA_prop_line + input$SP_prop_bsi*input$SP_prop_line +
                                         input$NM_prop_bsi*input$NM_prop_line + input$AB_prop_bsi*input$AB_prop_line + input$EC_prop_bsi*input$EC_prop_line),
       
-      p.CefGen_bact_nocul_impro = (input$kleb_prop_bsi*input$kleb_prop_line + input$SA_prop_bsi*input$SA_prop_line + input$PA_prop_bsi*input$PA_prop_line + input$SP_prop_bsi*input$SP_prop_line + 
+      p.CefGen_bact_nocul_impro = (input$kleb_prop_bsi*input$kleb_prop_line + input$SA_prop_bsi*input$SA_prop_line + input$PA_prop_bsi*input$PA_prop_line + input$SP_prop_bsi*input$SP_prop_line +
                                      input$NM_prop_bsi*input$NM_prop_line + input$AB_prop_bsi*input$AB_prop_line + input$EC_prop_bsi*input$EC_prop_line),
+      
+      
+      
       #p.CefGen_bact_nocul_deter = input$p.CefGen_bact_nocul_deter,
       #p.CefGen_bact_nocul_impro = input$p.CefGen_bact_nocul_impro,
       #p.CefGen_bact_nocul_nocha = 1-input$p.CefGen_bact_nocul_deter-input$p.CefGen_bact_nocul_impro,
@@ -773,47 +770,37 @@ server <- function(input, output, session) {
       cost_caredetrio = 203.19,
       cost_careimprov = 14.44,
       
-      los_bact_culpos_stepdown = 7,
-      los_bact_culpos_stepup = 7*1.5,
-      los_bact_culpos_nochange = 7,
+      los_bact_culpos_nochange = 7/365,
+      los_bact_culpos_stepup = 7/365*1.5,
       
       ## Culture negative in-hospital mortality based on clinical condition
-      los_bact_culneg_stepup_deter = 10.5*2,
-      los_bact_culneg_nochange_deter = 10.5*1.5,
-      los_bact_culneg_stepdown_impro = 7,
-      los_bact_culneg_nochange_impro = 7,
-      los_bact_culneg_stepup_uncha = 7,
-      los_bact_culneg_nochange_uncha = 7,
-      
+      los_bact_culneg_stepup_deter = (10.5/365)*2,
+      los_bact_culneg_nochange_deter = (10.5/365)*1.5,
+      los_bact_culneg_stepdown_impro = 7/365,
+      los_bact_culneg_nochange_impro = 7/365,
       ## No microbiology testing performed: in-hospital mortality based on clinical condition
-      los_bact_nocul_stepup_deter = 10.5*1.25,
-      los_bact_nocul_nochange_deter = 10.5*2,
-      los_bact_nocul_stepdown_impro = 10.5*1.5,
-      los_bact_nocul_nochange_impro = 10.5,
-      los_bact_nocul_stepup_uncha = 13.125,
-      los_bact_nocul_nochange_uncha = 10.5*2*1.5,
+      los_bact_nocul_stepup_deter = (10.5/365)*1.25,
+      los_bact_nocul_nochange_deter = (10.5/365)*2,
+      los_bact_nocul_stepdown_impro = (10.5/365)*1.5,
+      los_bact_nocul_nochange_impro = (10.5/365),
       
       # Patient with no bacterial infection
-      ## Culture positive: in-hospital losality after step-down, step-up, or no change
-      los_nobact_culpos_stepdown = 7/2,
-      los_nobact_culpos_stepup = 7*1.5/2,
-      los_nobact_culpos_nochange = 7/2,
+      ## Culture positive: in-hospital LOS after step-down, step-up, or no change
+      los_nobact_culpos_stepdown = (7/365)/2,
+      los_nobact_culpos_stepup = (7/365*1.5)/2,
+      los_nobact_culpos_nochange = (7/365)/2,
       
-      ## Culture negative: in-hospital losality based on clinical condition (for culture negatives)
-      los_nobact_culneg_stepup_deter = 10.5*2/2,
-      los_nobact_culneg_nochange_deter = 10.5*1.5/2,
-      los_nobact_culneg_stepdown_impro = 7/2,
-      los_nobact_culneg_nochange_impro = 7/2,
-      los_nobact_culneg_stepup_uncha = 7/2,
-      los_nobact_culneg_nochange_uncha = 7/2,
+      ## Culture negative: in-hospital LOS based on clinical condition (for culture negatives)
+      los_nobact_culneg_stepup_deter = (10.5/365)*2/2,
+      los_nobact_culneg_nochange_deter = (10.5/365)*1.5/2,
+      los_nobact_culneg_stepdown_impro = (7/365)/2,
+      los_nobact_culneg_nochange_impro = (7/365)/2,
       
       ## No microbiology testing performed: in-hospital losality based on clinical condition
-      los_nobact_nocul_stepup_deter = 10.5*2/2,
-      los_nobact_nocul_nochange_deter = 10.5*1.5/2,
-      los_nobact_nocul_stepdown_impro = 7/2,
-      los_nobact_nocul_nochange_impro = 7/2,
-      los_nobact_nocul_stepup_uncha = 7/2,
-      los_nobact_nocul_nochange_uncha = 7/2,
+      los_nobact_nocul_stepup_deter = (10.5/365)*2/2,
+      los_nobact_nocul_nochange_deter = (10.5/365)*1.5/2,
+      los_nobact_nocul_stepdown_impro = (7/365)/2,
+      los_nobact_nocul_nochange_impro = (7/365)/2,
       
       # Mortality of each path ----
       # Patient with bacterial infection
@@ -826,15 +813,11 @@ server <- function(input, output, session) {
       mort_bact_culneg_nochange_deter = 0.2*1.25*1.5,
       mort_bact_culneg_stepdown_impro = 0.2, # mort_bact_culneg_stepup_deter/3,
       mort_bact_culneg_nochange_impro = 0.2, # mort_bact_culneg_stepup_deter/3,
-      mort_bact_culneg_stepup_uncha = 0.2*1.25, # mort_bact_culneg_stepup_deter/3,
-      mort_bact_culneg_nochange_uncha = 0.2*1.25, #mort_bact_culneg_stepup_deter/2,
       ## No microbiology testing performed: in-hospital mortality based on clinical condition
       mort_bact_nocul_stepup_deter = 0.2*1.25*1.25,
       mort_bact_nocul_nochange_deter = 0.2*1.25*2,
       mort_bact_nocul_stepdown_impro = 0.2*1.25*1.5,
       mort_bact_nocul_nochange_impro = 0.2*1.25*1.25,
-      mort_bact_nocul_stepup_uncha = 0.2*1.25*1.25,
-      mort_bact_nocul_nochange_uncha = 0.2*1.25*1.5,
       
       # Patient with no bacterial infection
       ## Culture positive: in-hospital mortality after step-down, step-up, or no change
@@ -846,15 +829,11 @@ server <- function(input, output, session) {
       mort_nobact_culneg_nochange_deter = 0.2*1.25*1.5/2,
       mort_nobact_culneg_stepdown_impro = 0.2/2,
       mort_nobact_culneg_nochange_impro = 0.2/2,
-      mort_nobact_culneg_stepup_uncha =  0.2*1.25/2,
-      mort_nobact_culneg_nochange_uncha = 0.2*1.25/2,
       ## No microbiology testing performed: in-hospital mortality based on clinical condition
       mort_nobact_nocul_stepup_deter = 0.2*1.25/2,
       mort_nobact_nocul_nochange_deter = 0.2*1.25*1.5/2,
       mort_nobact_nocul_stepdown_impro =  0.2/2,
       mort_nobact_nocul_nochange_impro = 0.2/2,
-      mort_nobact_nocul_stepup_uncha = 0.2*1.25/2,
-      mort_nobact_nocul_nochange_uncha = 0.2*1.25/2,
       
       # DALY of each path ----
       # DALY = YLL + YLD
@@ -880,7 +859,7 @@ server <- function(input, output, session) {
       yll_bact_nocul_stepdown_impro = 0.2*1.25*1.5*11,     
       yll_bact_nocul_nochange_impro = 0.2*1.25*1.25*11, 
       yll_bact_nocul_stepup_uncha = 0.2*1.25*1.25*11,   
-      yll_bact_nocul_nochange_uncha = 0.2*1.25*1.5*11,   
+      yll_bact_nocul_nochange_uncha = 0.2*1.25*1.5*11, 
       
       # Patient with no bacterial infection
       ## Culture positive: in-hospital mortality after step-down, step-up, or no change
@@ -905,43 +884,37 @@ server <- function(input, output, session) {
       # Patient with bacterial infection
       ## Culture positive: in-hospital length of hospitalisation after step-down, step-up, or no change
       daly_weight = 0.33,
-      yld_bact_culpos_stepdown = 7*0.33,       # expectation of life at age 55-59 years
-      yld_bact_culpos_stepup = 7*1.5*0.33,         
-      yld_bact_culpos_nochange = 7*0.33,   
+      yld_bact_culpos_stepdown = (7/365)*0.33,       # expectation of life at age 55-59 years
+      yld_bact_culpos_stepup = (7/365)*1.5*0.33,         
+      yld_bact_culpos_nochange = (7/365)*0.33,   
       ## Culture negative in-hospital length of hospitalisation based on clinical condition
-      yld_bact_culneg_stepup_deter = 10.5*2*0.33,                
-      yld_bact_culneg_nochange_deter = 10.5*1.5*0.33, 
-      yld_bact_culneg_stepdown_impro = 7*0.33,     
-      yld_bact_culneg_nochange_impro = 7*0.33, 
-      yld_bact_culneg_stepup_uncha = 7*0.33,   
-      yld_bact_culneg_nochange_uncha = 7*0.33,   
+      yld_bact_culneg_stepup_deter = (10.5/365)*2*0.33,                
+      yld_bact_culneg_nochange_deter = (10.5/365)*1.5*0.33, 
+      yld_bact_culneg_stepdown_impro = (7/365)*0.33,     
+      yld_bact_culneg_nochange_impro = (7/365)*0.33, 
+      
       ## No microbiology testing performed: in-hospital length of hospitalisation based on clinical condition
-      yld_bact_nocul_stepup_deter = 10.5*1.25*0.33,                
-      yld_bact_nocul_nochange_deter = 10.5*2*0.33, 
-      yld_bact_nocul_stepdown_impro = 10.5*1.5*0.33,     
-      yld_bact_nocul_nochange_impro = 10.5*0.33, 
-      yld_bact_nocul_stepup_uncha = 13.125*0.33,   
-      yld_bact_nocul_nochange_uncha = 10.5*2*1.5*0.33,   
+      yld_bact_nocul_stepup_deter = (10.5/365)*1.25*0.33,                
+      yld_bact_nocul_nochange_deter = (10.5/365)*2*0.33, 
+      yld_bact_nocul_stepdown_impro = (10.5/365)*1.5*0.33,     
+      yld_bact_nocul_nochange_impro = (10.5/365)*0.33, 
       
       # Patient with no bacterial infection
       ## Culture positive: in-hospital length of hospitalisation after step-down, step-up, or no change
-      yld_nobact_culpos_stepdown = 7/2*0.33,       # expectation of life at age 55-59 years
-      yld_nobact_culpos_stepup = 7*1.5/2*0.33,         
-      yld_nobact_culpos_nochange = 7/2*0.33,   
+      yld_nobact_culpos_stepdown = (7/365)/2*0.33,       # expectation of life at age 55-59 years
+      yld_nobact_culpos_stepup = (7/365)*1.5/2*0.33,         
+      yld_nobact_culpos_nochange = (7/365)/2*0.33,   
       ## Culture negative: in-hospital length of hospitalisation based on clinical condition (for culture negatives)
-      yld_nobact_culneg_stepup_deter = 10.5*2/2*0.33,                
-      yld_nobact_culneg_nochange_deter = 10.5*1.5/2*0.33, 
-      yld_nobact_culneg_stepdown_impro = 7/2*0.33,     
-      yld_nobact_culneg_nochange_impro = 7/2*0.33, 
-      yld_nobact_culneg_stepup_uncha = 7/2*0.33,   
-      yld_nobact_culneg_nochange_uncha = 7/2*0.33,   
+      yld_nobact_culneg_stepup_deter = (10.5/365)*2/2*0.33,                
+      yld_nobact_culneg_nochange_deter = (10.5/365)*1.5/2*0.33, 
+      yld_nobact_culneg_stepdown_impro = (7/365)/2*0.33,     
+      yld_nobact_culneg_nochange_impro = (7/365)/2*0.33, 
+      
       ## No microbiology testing performed: in-hospital length of hospitalisation based on clinical condition
-      yld_nobact_nocul_stepup_deter = 10.5*2/2*0.33,                
-      yld_nobact_nocul_nochange_deter = 10.5*1.5/2*0.33, 
-      yld_nobact_nocul_stepdown_impro = 7/2*0.33,     
-      yld_nobact_nocul_nochange_impro = 7/2*0.33, 
-      yld_nobact_nocul_stepup_uncha = 7/2*0.33,   
-      yld_nobact_nocul_nochange_uncha = 7/2*0.33,
+      yld_nobact_nocul_stepup_deter = (10.5/365)*2/2*0.33,                
+      yld_nobact_nocul_nochange_deter = (10.5/365)*1.5/2*0.33, 
+      yld_nobact_nocul_stepdown_impro = (7/365)/2*0.33,     
+      yld_nobact_nocul_nochange_impro = (7/365)/2*0.33, 
       
       length_targeted = input$length_targeted,
       length_empiric = 3,
@@ -966,6 +939,7 @@ server <- function(input, output, session) {
     model_results()
   })
   
+  
   output$plotCEP <-   renderPlot({
     
     # this should give the results produced by the decision tree model 
@@ -976,17 +950,17 @@ server <- function(input, output, session) {
                         "daly.noactivelab_CefGen", "daly.activelab_CefGen")
     ## Plot CEA
     ggplot(data) +
-      geom_point(aes(x=diff_daly/1000, y=diff_cost), size = 20, colour = "red",alpha = 0.8, shape = 21,stroke = 8) + 
+      geom_point(aes(x=1000*diff_daly/input$N, y=diff_cost), size = 20, colour = "red",alpha = 0.8, shape = 21,stroke = 8) + 
       geom_label_repel(
         label="Example Intervention",
         data = data,
-        x = data$diff_daly/1000, y=data$diff_cost, #we divide the diff_daly by 1000 since we want it per 1000 people
+        x = 1000*(data$diff_daly)/input$N, y=data$diff_cost, #we divide the diff_daly by 1000 since we want it per 1000 people
         color = "black", fill= "lightgrey", box.padding = 4,
         nudge_x = 0, nudge_y = 20
       ) + labs(
         y="Incremental Costs ($)",
-        x="DALY Averted /1,000 patients",
-        title = paste0("Cost-Effectiveness Plane - Intervention Incremental Cost: ", data$diff_cost,"($),  DALY Averted/1000 Patients: ", data$diff_daly/1000))+
+        x="DALY Averted/1000 Patients",
+        title = paste0("Cost-Effectiveness Plane - Intervention Incremental Cost: ", data$diff_cost,"($),  DALY Averted/1000 Patients: ", 1000*(data$diff_daly)/input$N))+
       # xlim(-2000, 2000) +
       # ylim(-8000000, 8000000) +
       xlim(-(input$SLIDERX), input$SLIDERX) +
