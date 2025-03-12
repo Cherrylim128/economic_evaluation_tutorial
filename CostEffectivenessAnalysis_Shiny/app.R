@@ -57,7 +57,7 @@ ui <- dashboardPage(
         icon = icon("flask")
       ),
       menuItem(
-        "No Culture Parameters",
+        "No Active Microbiology",
         tabName = "culture_no",
         icon = icon("flask")
       ),
@@ -144,7 +144,7 @@ ui <- dashboardPage(
                 "In this example, we will look at the top 7 pathogens causing bloodstream infections (BSI) in Kenya. The top pathogens from are Klebsiella pneumoniae, Staphylococcus aureus, Pseudomonas aeruginosa,
                 Streptococcus pneumoniae, Neisseria meningitidis, Acinetobacter baumannii, and Escherichia coli. Adjust the sliders to specify the proportion
                 of BSI they cause and the proportion suseptible to recommended first line treatment.", br(),br(),
-
+                
                 
                 bs4Card(
                   title = "Klebsiella pneumoniae",
@@ -159,7 +159,7 @@ ui <- dashboardPage(
                     ) ,
                     column(
                       width = 6,
-                       sliderInput("kleb_prop_line", "Proportion Suseptible to Recommended 1st line treatment", value = 0.95, min = 0, max = 1, step = 0.05)
+                      sliderInput("kleb_prop_line", "Proportion Suseptible to Recommended 1st line treatment", value = 0.95, min = 0, max = 1, step = 0.05)
                     )
                   )
                 ),
@@ -309,11 +309,11 @@ ui <- dashboardPage(
               fluidRow(
                 column(
                   width = 6,
-                  numericInput("p.bact_culture_pos", "Probability Culture Positive when Bacterial Infection Present", value = 0.5, min = 0, max = 1, step = 0.05)
+                  numericInput("p.bact_culture_pos", "Probability within the “active microbiology laboratory services” arm of the decision tree, that a patient with suspected primary BSI has a bacterial infection, is culture positive", value = 0.5, min = 0, max = 1, step = 0.05)
                 ),
                 column(
                   width = 6,
-                  numericInput("p.nobact_culture_pos", "Probability Culture Positive when No Bacterial Infection", value = 0.5, min = 0, max = 1, step = 0.05)
+                  numericInput("p.nobact_culture_pos", "Probability within the “active microbiology laboratory services” arm of the decision tree, that a patient with suspected primary BSI does not have a bacterial infection, is culture positive", value = 0.5, min = 0, max = 1, step = 0.05)
                 )
               )
             )
@@ -353,67 +353,69 @@ ui <- dashboardPage(
         tabName = "culture_negative",
         fluidRow(
           bs4Card(
-            title = "Culture Negatives Branch Parameters",
+            title = "Suspected Primary BSI has a Bacterial Infection and Culture Negative",
             status = "primary",
             solidHeader = TRUE,
             width = 6,
             collapsible = TRUE,
             numericInput("p.CefGen_bact_culneg_deter", "Probability of clinical deterioration", value = 0.5, min = 0, max = 1, step = 0.05),
-            numericInput("p.CefGen_bact_culneg_impro", "Probability of clinical improvement", value = 0.5, min = 0, max = 1, step = 0.05),
-            valueBoxOutput("prob_bact_culneg_nocha", width = 12)
+            valueBoxOutput("p.CefGen_bact_culneg_impro", width = 12)
+            #numericInput("p.CefGen_bact_culneg_impro", "Probability of clinical improvement", value = 0.5, min = 0, max = 1, step = 0.05)#,
+            #valueBoxOutput("prob_bact_culneg_nocha", width = 12) # get rid 
           ),
           bs4Card(
-            title = "Culture Negative with No Bacterial Infection",
+            title = "Suspected Primary BSI does not have a Bacterial Infection and Culture Negative",
             status = "primary",
             solidHeader = TRUE,
             width = 6,
             collapsible = TRUE,
             numericInput("p.CefGen_nobact_culneg_deter", "Probability of clinical deterioration", value = 0.5, min = 0, max = 1, step = 0.05),
-            numericInput("p.CefGen_nobact_culneg_impro", "Probability of clinical improvement", value = 0.5, min = 0, max = 1, step = 0.05),
-            valueBoxOutput("prob_nobact_culneg_nocha", width = 12)
+            valueBoxOutput("p.CefGen_nobact_culneg_impro", width = 12)
+            #numericInput("p.CefGen_nobact_culneg_impro", "Probability of clinical improvement", value = 0.5, min = 0, max = 1, step = 0.05)#,
+            #valueBoxOutput("prob_nobact_culneg_nocha", width = 12) #get rid 
           )
         ),
         fluidRow(
           bs4Card(
-            title = "Culture Negative Treatment Decisions",
+            title = "Changes of treatment for a patient with suspected primary BSI has a bacterial infection and culture negative",
             status = "info",
             solidHeader = TRUE,
             width = 12,
             collapsible = TRUE,
             column(
-              width = 4,
-              numericInput("p.CefGen_culneg_deter_stepup_nochange", "Probability of stepping up (deterioration)", value = 0.5, min = 0, max = 1, step = 0.05)
+              width = 4, #remove no change
+              numericInput("p.CefGen_culneg_deter_stepup", "Probability within the “active microbiology laboratory services” arm of the decision tree, that a patient with suspected primary BSI has a bacterial infection, is culture negative and clinical condition deteriorates, and subsequently steps down from the empiric antibiotic treatment.", value = 0.5, min = 0, max = 1, step = 0.05)
             ),
             column(
               width = 4,
-              numericInput("p.CefGen_culneg_impro_stepdown_nochange", "Probability of stepping down (improvement)", value = 0.5, min = 0, max = 1, step = 0.05)
-            ),
-            column(
-              width = 4,
-              numericInput("p.CefGen_culneg_nocha_stepup_nochange", "Probability of stepping up (no change)", value = 0.5, min = 0, max = 1, step = 0.05)
-            )
+              numericInput("p.CefGen_culneg_impro_stepdown", "probability within the “active microbiology laboratory services” arm of the decision tree, that a patient with suspected primary BSI has a bacterial infection, is culture negative and clinical improves, and subsequently steps down from the empiric antibiotic treatment.", value = 0.5, min = 0, max = 1, step = 0.05)
+            )#,
+            # column(
+            #   width = 4,
+            #   numericInput("p.CefGen_culneg_nocha_stepup_nochange", "Probability of stepping up (no change)", value = 0.5, min = 0, max = 1, step = 0.05) #get rid 
+            # )
           )
         ),
         fluidRow(
           column(
             width = 12,
             bs4Card(
-              title = "Treatment Modification Probabilities",
+              title = "Changes of treatment for a patient with suspected primary BSI does not have a bacterial infection and culture negative",
               status = "info",
               solidHeader = TRUE,
               width = 12,
               collapsible = TRUE,
               column(
                 width = 12,
-                numericInput("p.culneg_deter_stepup_nochange", "Probability of stepping up from the current antibiotic treatment when clincial condition deteriorates", value = 0.5, min = 0, max = 1, step = 0.05),
-                numericInput("p.culneg_impro_stepdown_nochange", "Probability of stepping down from the current antibiotic treatment when clincial condition improves", value = 0.5, min = 0, max = 1, step = 0.05),
-                numericInput("p.culneg_nocha_stepup_nochange", "Probability of stepping up from the current antibiotic treatment when clincial condition remains unchanged", value = 0.5, min = 0, max = 1, step = 0.05)
+                numericInput("p.culneg_deter_stepup", "Probability within the “active microbiology laboratory services” arm of the decision tree, that a patient with suspected primary BSI does not have a bacterial infection, is culture negative and clinical condition deteriorates, and subsequently steps down from the empiric antibiotic treatment.", value = 0.5, min = 0, max = 1, step = 0.05),
+                numericInput("p.culneg_impro_stepdown", "probability within the “active microbiology laboratory services” arm of the decision tree, that a patient with suspected primary BSI does not have a bacterial infection, is culture negative and clinical improves, and subsequently steps down from the empiric antibiotic treatment.", value = 0.5, min = 0, max = 1, step = 0.05)#,
+                #numericInput("p.culneg_nocha_stepup_nochange", "Probability of stepping up from the current antibiotic treatment when clincial condition remains unchanged", value = 0.5, min = 0, max = 1, step = 0.05) # remove
               )
             )
           )
         )
       ),
-  tabItem(
+      tabItem(
         tabName = "culture_no",
         fluidRow(
           # bs4Card(
@@ -426,37 +428,37 @@ ui <- dashboardPage(
           #   #numericInput("p.CefGen_bact_nocul_impro", "Probability of clinical improvement", value = 0.5, min = 0, max = 1, step = 0.05),
           #   #valueBoxOutput("prob_bact_nocul_nocha", width = 12)
           # ),
-      bs4Card(
-        title = "No Culture with No Bacterial Infection",
-        status = "primary",
-        solidHeader = TRUE,
-        width = 12,
-        collapsible = TRUE,
-        numericInput("p.CefGen_nobact_nocul_deter", "Probability of clinical deterioration", value = 0.5, min = 0, max = 1, step = 0.05),
-        numericInput("p.CefGen_nobact_nocul_impro", "Probability of clinical improvement", value = 0.5, min = 0, max = 1, step = 0.05),
-        valueBoxOutput("prob_nobact_nocul_nocha", width = 12)
-      )),
-      fluidRow(
-        bs4Card(
-          title = "No Culture Treatment Decisions",
-          status = "info",
-          solidHeader = TRUE,
-          width = 12,
-          collapsible = TRUE,
-          column(
-            width = 4,
-            numericInput("p.CefGen_nocul_deter_stepup_nochange", "Probability of patient stepping up with non-bacterial infection, whose condition deteriorates under ceftriaxone/gentamicin treatment", value = 0.012, min = 0, max = 1, step = 0.01)
-          ),
-          column(
-            width = 4,
-            numericInput("p.CefGen_nocul_impro_stepdown_nochange", "Probability of stepping down with non-bacterial infection, whose condition improves under ceftriaxone/gentamicin treatment", value = 0.013, min = 0, max = 1, step = 0.01)
-          ),
-          column(
-            width = 4,
-            #numericInput("p.CefGen_nocul_nocha_stepup_nochange", "Probability of stepping up with non-bacterial infection, whose condition has no change under ceftriaxone/gentamicin treatment", value = 0.5, min = 0, max = 1, step = 0.05)
+          bs4Card(
+            title = "No Active Microbiology Laboratory Services and the Patients has Bacterial Infection",
+            status = "primary",
+            solidHeader = TRUE,
+            width = 12,
+            collapsible = TRUE,
+            numericInput("p.CefGen_nobact_nocul_deter", "Probability within the “no active microbiology laboratory services” arm of the decision tree, that a patient with suspected primary BSI does not have a bacterial infection and clinical condition deteriorates.", value = 0.5, min = 0, max = 1, step = 0.05),
+            numericInput("p.CefGen_nobact_nocul_impro", "probability within the “no active microbiology laboratory services” arm of the decision tree, that a patient with suspected primary BSI does not have a bacterial infection and clinical condition improves.", value = 0.5, min = 0, max = 1, step = 0.05)#,
+            #valueBoxOutput("prob_nobact_nocul_nocha", width = 12) # get rid 
+          )),
+        fluidRow(
+          bs4Card(
+            title = "No Culture Treatment Decisions",
+            status = "info",
+            solidHeader = TRUE,
+            width = 12,
+            collapsible = TRUE,
+            column(
+              width = 4,
+              numericInput("p.CefGen_nocul_deter_stepup_nochange", "Probability within the “no active microbiology laboratory services” arm of the decision tree, that a patient with suspected primary BSI and clinical condition deteriorates, and subsequently steps up from the empiric antibiotic treatment.", value = 0.012, min = 0, max = 1, step = 0.01)
+            ),
+            column(
+              width = 4,
+              numericInput("p.CefGen_nocul_impro_stepdown_nochange", "Probability within the “no active microbiology laboratory services” arm of the decision tree, that a patient with suspected primary BSI and clinical condition improves, and subsequently steps down from the empiric antibiotic treatment.", value = 0.013, min = 0, max = 1, step = 0.01)
+            )#,
+            # column(
+            #   width = 4,
+            #   #numericInput("p.CefGen_nocul_nocha_stepup_nochange", "Probability of stepping up with non-bacterial infection, whose condition has no change under ceftriaxone/gentamicin treatment", value = 0.5, min = 0, max = 1, step = 0.05)
+            # )
           )
-        )
-      )),
+        )),
       
       # Economic Parameters Tab
       tabItem(
@@ -564,34 +566,35 @@ server <- function(input, output, session) {
     )
   })
   
-  output$prob_culpos_nochange <- renderValueBox({
-    valueBox(
-      subtitle = "Probability of no change in ceftriaxone/gentamicin for patient with culture positive result",
-      value = 1 - input$p.CefGen_culpos_stepup,
-      color = "primary",
-      icon = icon("pills")
-    )
-  })
+  # output$prob_culpos_nochange <- renderValueBox({
+  #   valueBox(
+  #     subtitle = "Probability of no change in ceftriaxone/gentamicin for patient with culture positive result",
+  #     value = 1 - input$p.CefGen_culpos_stepup,
+  #     color = "primary",
+  #     icon = icon("pills")
+  #   )
+  # })
   
-  output$prob_bact_culneg_nocha <- renderValueBox({
-    value <- 1 - input$p.CefGen_bact_culneg_deter - input$p.CefGen_bact_culneg_impro
+  #changing to the 
+  output$p.CefGen_bact_culneg_impro <- renderValueBox({
+    value <- 1 - input$p.CefGen_bact_culneg_deter
     color <- if(value < 0) "danger" else "primary"
     
     valueBox(
       value = max(0, value),
-      subtitle = "Probability of no clinical change",
+      subtitle = "Probability of clinical improvement",
       color = color,
       icon = icon("equals")
     )
   })
   
-  output$prob_nobact_culneg_nocha <- renderValueBox({
-    value <- 1 - input$p.CefGen_nobact_culneg_deter - input$p.CefGen_nobact_culneg_impro
+  output$p.CefGen_nobact_culneg_impro <- renderValueBox({
+    value <- 1 - input$p.CefGen_nobact_culneg_deter
     color <- if(value < 0) "danger" else "primary"
     
     valueBox(
       value = max(0, value),
-      subtitle = "Probability of no clinical change",
+      subtitle = "Probability of clinical improvement",
       color = color,
       icon = icon("equals")
     )
@@ -609,17 +612,17 @@ server <- function(input, output, session) {
   #   )
   # })
   
-  output$prob_nobact_nocul_nocha <- renderValueBox({
-    value <- 1 - input$p.CefGen_nobact_nocul_deter - input$p.CefGen_nobact_nocul_impro
-    color <- if(value < 0) "danger" else "primary"
-    
-    valueBox(
-      value = max(0, value),
-      subtitle = "Probability of no clinical change",
-      color = color,
-      icon = icon("equals")
-    )
-  })
+  # output$prob_nobact_nocul_nocha <- renderValueBox({
+  #   value <- 1 - input$p.CefGen_nobact_nocul_deter - input$p.CefGen_nobact_nocul_impro
+  #   color <- if(value < 0) "danger" else "primary"
+  #   
+  #   valueBox(
+  #     value = max(0, value),
+  #     subtitle = "Probability of no clinical change",
+  #     color = color,
+  #     icon = icon("equals")
+  #   )
+  # })
   
   # Reset button functionality
   observeEvent(input$reset, {
@@ -629,22 +632,22 @@ server <- function(input, output, session) {
     updateNumericInput(session, "p.nobact_culture_pos", value = 0.5)
     #updateNumericInput(session, "p.CefGen_culpos_stepup", value = 0.5)
     updateNumericInput(session, "p.CefGen_bact_culneg_deter", value = 0.5)
-    updateNumericInput(session, "p.CefGen_bact_culneg_impro", value = 0.5)
+    #updateNumericInput(session, "p.CefGen_bact_culneg_impro", value = 0.5)
     updateNumericInput(session, "p.CefGen_nobact_culneg_deter", value = 0.5)
-    updateNumericInput(session, "p.CefGen_nobact_culneg_impro", value = 0.5)
-    updateNumericInput(session, "p.culneg_deter_stepup_nochange", value = 0.5)
-    updateNumericInput(session, "p.culneg_impro_stepdown_nochange", value = 0.5)
-    updateNumericInput(session, "p.culneg_nocha_stepup_nochange", value = 0.5)
+    #updateNumericInput(session, "p.CefGen_nobact_culneg_impro", value = 0.5)
+    updateNumericInput(session, "p.culneg_deter_stepup", value = 0.5)
+    updateNumericInput(session, "p.culneg_impro_stepdown", value = 0.5)
+    #updateNumericInput(session, "p.culneg_nocha_stepup_nochange", value = 0.5)
     #updateNumericInput(session, "p.CefGen_bact_nocul_deter", value = 0.5)
     #updateNumericInput(session, "p.CefGen_bact_nocul_impro", value = 0.5)
     updateNumericInput(session, "p.CefGen_nobact_nocul_deter", value = 0.5)
     updateNumericInput(session, "p.CefGen_nobact_nocul_impro", value = 0.5)
-    updateNumericInput(session, "p.CefGen_culneg_deter_stepup_nochange", value = 0.5)
-    updateNumericInput(session, "p.CefGen_culneg_impro_stepdown_nochange", value = 0.5)
-    updateNumericInput(session, "p.CefGen_culneg_nocha_stepup_nochange", value = 0.5)
+    updateNumericInput(session, "p.CefGen_culneg_deter_stepup", value = 0.5)
+    updateNumericInput(session, "p.CefGen_culneg_impro_stepdown", value = 0.5)
+    #updateNumericInput(session, "p.CefGen_culneg_nocha_stepup_nochange", value = 0.5)
     updateNumericInput(session, "p.CefGen_nocul_deter_stepup_nochange", value = 0.012)
     updateNumericInput(session, "p.CefGen_nocul_impro_stepdown_nochange", value = 0.013)
-   # updateNumericInput(session, "p.CefGen_nocul_nocha_stepup_nochange", value = 0.5)
+    # updateNumericInput(session, "p.CefGen_nocul_nocha_stepup_nochange", value = 0.5)
     updateNumericInput(session, "cost_henced_microlab", value = 300)
     updateNumericInput(session, "cost_CefGen", value = 1.76)
     updateNumericInput(session, "cost_Merope", value = 35.16)
@@ -661,13 +664,13 @@ server <- function(input, output, session) {
     updateSliderInput(session, "AB_prop_bsi", value = 0.05)
     updateSliderInput(session, "EC_prop_bsi", value = 0.05)
     updateSliderInput(session, "kleb_prop_bsi", value = 0.05)
-    updateSliderInput(session, "SA_prop_line", value = 0.05)
-    updateSliderInput(session, "PA_prop_line", value = 0.05)
-    updateSliderInput(session, "SP_prop_line", value = 0.05)
-    updateSliderInput(session, "NM_prop_line", value = 0.05)
-    updateSliderInput(session, "AB_prop_line", value = 0.05)
-    updateSliderInput(session, "EC_prop_line", value = 0.05)
-    updateSliderInput(session, "kleb_prop_line", value = 0.05)
+    updateSliderInput(session, "SA_prop_line", value = 0.95)
+    updateSliderInput(session, "PA_prop_line", value = 0.95)
+    updateSliderInput(session, "SP_prop_line", value = 0.95)
+    updateSliderInput(session, "NM_prop_line", value = 0.95)
+    updateSliderInput(session, "AB_prop_line", value = 0.95)
+    updateSliderInput(session, "EC_prop_line", value = 0.95)
+    updateSliderInput(session, "kleb_prop_line", value = 0.95)
     updateSliderInput(session, "SLIDERX", value = 2000)
     updateSliderInput(session, "SLIDERY", value = 8000000)
     
@@ -687,18 +690,17 @@ server <- function(input, output, session) {
       p.nobact_culture_pos = input$p.nobact_culture_pos,
       p.bact_culture_pos = input$p.bact_culture_pos,
       
-       ## Branches of culture positives
+      ## Branches of culture positives
       #removed for shiny app
       #p.CefGen_culpos_stepdown = input$p.CefGen_culpos_stepdown
       
-      p.CefGen_culpos_nochange = (input$kleb_prop_bsi + input$SA_prop_bsi + input$PA_prop_bsi + input$SP_prop_bsi + 
-                                    input$NM_prop_bsi + input$AB_prop_bsi + input$EC_prop_bsi)*(input$kleb_prop_line + input$SA_prop_line + input$PA_prop_line + input$SP_prop_line + 
-                                                                                                  input$NM_prop_line + input$AB_prop_line + input$EC_prop_line),
+      
+      p.CefGen_culpos_nochange = (input$kleb_prop_bsi*input$kleb_prop_line + input$SA_prop_bsi*input$SA_prop_line + input$PA_prop_bsi*input$PA_prop_line + input$SP_prop_bsi*input$SP_prop_line + 
+                                    input$NM_prop_bsi*input$NM_prop_line + input$AB_prop_bsi*input$AB_prop_line + input$EC_prop_bsi*input$EC_prop_line),
       
       #here we edit the step up fxn to be the sum of the 
-      p.CefGen_culpos_stepup = 1- (input$kleb_prop_bsi + input$SA_prop_bsi + input$PA_prop_bsi + input$SP_prop_bsi + 
-                                     input$NM_prop_bsi + input$AB_prop_bsi + input$EC_prop_bsi)*(input$kleb_prop_line + input$SA_prop_line + input$PA_prop_line + input$SP_prop_line + 
-                                                                                                   input$NM_prop_line + input$AB_prop_line + input$EC_prop_line), 
+      p.CefGen_culpos_stepup = 1- (input$kleb_prop_bsi*input$kleb_prop_line + input$SA_prop_bsi*input$SA_prop_line + input$PA_prop_bsi*input$PA_prop_line + input$SP_prop_bsi*input$SP_prop_line + 
+                                     input$NM_prop_bsi*input$NM_prop_line + input$AB_prop_bsi*input$AB_prop_line + input$EC_prop_bsi*input$EC_prop_line), 
       #p.CefGen_culpos_stepup = input$p.CefGen_culpos_stepup,
       #p.CefGen_culpos_nochange = 1- input$p.CefGen_culpos_stepup, 
       
@@ -709,8 +711,9 @@ server <- function(input, output, session) {
       # p.CefGen_bact_culneg_deter = 1- (input$kleb_prop_bsi + input$SA_prop_bsi + input$PA_prop_bsi + input$SP_prop_bsi + 
       #       input$NM_prop_bsi + input$AB_prop_bsi + input$EC_prop_bsi)*(input$kleb_prop_line + input$SA_prop_line + input$PA_prop_line + input$SP_prop_line + 
       #                                                                     input$NM_prop_line + input$AB_prop_line + input$EC_prop_line),
-      p.CefGen_bact_culneg_impro = input$p.CefGen_bact_culneg_impro,
-      p.CefGen_bact_culneg_nocha = 1 - input$p.CefGen_bact_culneg_deter - input$p.CefGen_bact_culneg_impro,
+      p.CefGen_bact_culneg_impro = 1 - input$p.CefGen_bact_culneg_deter,
+      
+      #p.CefGen_bact_culneg_nocha = 1 - input$p.CefGen_bact_culneg_deter - input$p.CefGen_bact_culneg_impro,
       
       #setting this to the same setup value for now 
       # p.CefGen_nobact_culneg_deter = 1- (input$kleb_prop_bsi + input$SA_prop_bsi + input$PA_prop_bsi + input$SP_prop_bsi + 
@@ -718,31 +721,29 @@ server <- function(input, output, session) {
       #                                                                                                  input$NM_prop_line + input$AB_prop_line + input$EC_prop_line),
       # 
       p.CefGen_nobact_culneg_deter = input$p.CefGen_nobact_culneg_deter,
-      p.CefGen_nobact_culneg_impro = input$p.CefGen_nobact_culneg_impro,
-      p.CefGen_nobact_culneg_nocha = 1 - input$p.CefGen_nobact_culneg_deter - input$p.CefGen_nobact_culneg_impro,
+      p.CefGen_nobact_culneg_impro = 1 - input$p.CefGen_nobact_culneg_deter,
+      #p.CefGen_nobact_culneg_nocha = 1 - input$p.CefGen_nobact_culneg_deter - input$p.CefGen_nobact_culneg_impro,
       
-      p.CefGen_culneg_deter_stepup = input$p.CefGen_culneg_deter_stepup_nochange,
-      p.CefGen_culneg_deter_nochange = 1-input$p.CefGen_culneg_deter_stepup_nochange,
-      p.CefGen_culneg_impro_stepdown = input$p.CefGen_culneg_impro_stepdown_nochange,
-      p.CefGen_culneg_impro_nochange = 1-input$p.CefGen_culneg_impro_stepdown_nochange,
-      p.CefGen_culneg_nocha_stepup = input$p.CefGen_culneg_nocha_stepup_nochange,
-      p.CefGen_culneg_nocha_nochange = 1-input$p.CefGen_culneg_nocha_stepup_nochange,
+      p.CefGen_culneg_deter_stepup = input$p.CefGen_culneg_deter_stepup,
+      p.CefGen_culneg_deter_nochange = 1-input$p.CefGen_culneg_deter_stepup,
+      p.CefGen_culneg_impro_stepdown = input$p.CefGen_culneg_impro_stepdown,
+      p.CefGen_culneg_impro_nochange = 1-input$p.CefGen_culneg_impro_stepdown,
+      #p.CefGen_culneg_nocha_stepup = input$p.CefGen_culneg_nocha_stepup_nochange,
+      #p.CefGen_culneg_nocha_nochange = 1-input$p.CefGen_culneg_nocha_stepup_nochange,
       
-      p.culneg_deter_stepup = input$p.culneg_deter_stepup_nochange,
-      p.culneg_deter_nochange = 1-input$p.culneg_deter_stepup_nochange,
-      p.culneg_impro_stepdown = input$p.culneg_impro_stepdown_nochange,
-      p.culneg_impro_nochange = 1-input$p.culneg_impro_stepdown_nochange,
-      p.culneg_nocha_stepup = input$p.culneg_nocha_stepup_nochange,
-      p.culneg_nocha_nochange = 1-input$p.culneg_nocha_stepup_nochange,
+      p.culneg_deter_stepup = input$p.culneg_deter_stepup,
+      p.culneg_deter_nochange = 1-input$p.culneg_deter_stepup,
+      p.culneg_impro_stepdown = input$p.culneg_impro_stepdown,
+      p.culneg_impro_nochange = 1-input$p.culneg_impro_stepdown,
+      #p.culneg_nocha_stepup = input$p.culneg_nocha_stepup_nochange,
+      #p.culneg_nocha_nochange = 1-input$p.culneg_nocha_stepup_nochange,
       
       ## Branches of no culture performed
-      p.CefGen_bact_nocul_deter = 1- (input$kleb_prop_bsi + input$SA_prop_bsi + input$PA_prop_bsi + input$SP_prop_bsi + 
-                                        input$NM_prop_bsi + input$AB_prop_bsi + input$EC_prop_bsi)*(input$kleb_prop_line + input$SA_prop_line + input$PA_prop_line + input$SP_prop_line +  input$NM_prop_line + input$AB_prop_line + input$EC_prop_line),
+      p.CefGen_bact_nocul_deter = 1- (input$kleb_prop_bsi*input$kleb_prop_line + input$SA_prop_bsi*input$SA_prop_line + input$PA_prop_bsi*input$PA_prop_line + input$SP_prop_bsi*input$SP_prop_line + 
+                                        input$NM_prop_bsi*input$NM_prop_line + input$AB_prop_bsi*input$AB_prop_line + input$EC_prop_bsi*input$EC_prop_line),
       
-      
-      p.CefGen_bact_nocul_impro = (input$kleb_prop_bsi + input$SA_prop_bsi + input$PA_prop_bsi + input$SP_prop_bsi + 
-                                     input$NM_prop_bsi + input$AB_prop_bsi + input$EC_prop_bsi)*(input$kleb_prop_line + input$SA_prop_line + input$PA_prop_line + input$SP_prop_line +  input$NM_prop_line + input$AB_prop_line + input$EC_prop_line),
-      
+      p.CefGen_bact_nocul_impro = (input$kleb_prop_bsi*input$kleb_prop_line + input$SA_prop_bsi*input$SA_prop_line + input$PA_prop_bsi*input$PA_prop_line + input$SP_prop_bsi*input$SP_prop_line + 
+                                     input$NM_prop_bsi*input$NM_prop_line + input$AB_prop_bsi*input$AB_prop_line + input$EC_prop_bsi*input$EC_prop_line),
       #p.CefGen_bact_nocul_deter = input$p.CefGen_bact_nocul_deter,
       #p.CefGen_bact_nocul_impro = input$p.CefGen_bact_nocul_impro,
       #p.CefGen_bact_nocul_nocha = 1-input$p.CefGen_bact_nocul_deter-input$p.CefGen_bact_nocul_impro,
