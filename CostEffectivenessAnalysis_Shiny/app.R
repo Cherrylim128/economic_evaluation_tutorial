@@ -6,6 +6,7 @@ library(geomtextpath)
 library(shinyWidgets)
 library(DT)
 library(fresh)
+library(shinyjs)
 
 # setwd("/Users/Cherry/2025/HDS CDT")
 #setwd("/Users/orayasrim/Documents/GRAM_shiny_workshop/economic_evaluation_tutorial-main")
@@ -25,7 +26,7 @@ ui <- dashboardPage(
     title = dashboardBrand(
       title = "Cost-Effectiveness Analysis",
       color = "primary"
-      #color = "primary"
+      #color = "primary" 
     ),
     skin = "light"
   ),
@@ -81,6 +82,15 @@ ui <- dashboardPage(
     )
   ),
   body = dashboardBody(
+    tags$head(
+      tags$style(HTML("
+        .loading-btn {
+          background-color: #B2BEB5 !important; /* Change color */
+          color: white !important;
+        }
+      "))
+    ),
+    
     tabItems(
       # Dashboard Tab
       tabItem(
@@ -98,14 +108,30 @@ ui <- dashboardPage(
               p("This application evaluates the cost-effectiveness of implementing an intervention (example with maintaining an active microbiology laboratory for blood culture testing in healthcare settings). The model uses a decision tree approach to compare strategies with and without active microbiology services."),
               p("Use the sidebar and the 'Bloodstream Infections Parameters' (BSI) tab below to navigate through the different parameter input sections, then run the model by clicking the 'Compute' button to see the results."),
               p("Navigate to the 'Kenya Example: Bloodstream Infections Parameters' tab below to set the proportion of BSI each top pathogen contributes to BSIs and the proportion each pathogen is susceptible to 1st line treatment. "),
-              # actionButton("run", "Run Analysis", class = "btn-lg btn-success")
+              
               actionButton(
                 inputId = "run",
                 class = "btn-primary",
                 width = "300px", style = "color: white; background-color: #228B22",
                 "Compute"
               )
-            )
+            ),
+            # JavaScript to handle button state changes
+            tags$script(HTML("
+            Shiny.addCustomMessageHandler('addLoadingClass', function(id) {
+              $('#' + id).addClass('loading-btn');
+            });
+      
+            Shiny.addCustomMessageHandler('removeLoadingClass', function(id) {
+              setTimeout(function() {
+                $('#' + id).removeClass('loading-btn');
+              }, 500);
+            });
+      
+            Shiny.addCustomMessageHandler('changeButtonText', function(data) {
+              $('#' + data.id).text(data.text);
+            });
+          "))
           )
         ),
         fluidRow(
@@ -136,7 +162,7 @@ ui <- dashboardPage(
                 sliderInput(inputId = "SLIDERY", label = "Y-axis limit", min = 0, max = 100000000, value = 8000000, step = 1000),
                 
                 br(),br(),
-                plotOutput("plotCEP", height = "600px")
+                addSpinner(plotOutput("plotCEP", height = "600px"),spin = "folding-cube", color = "navy"),
               ),
               tabPanel(
                 title = "Kenya Example: Bloodstream Infections Parameters",
@@ -682,6 +708,11 @@ server <- function(input, output, session) {
   
   # Reactive expression to run the model when the "Run Model" button is clicked
   model_results <- eventReactive(input$run, {
+    
+    # update button to laod when pressed 
+    session$sendCustomMessage("addLoadingClass", "run")
+    session$sendCustomMessage("changeButtonText", list(id = "run", text = "Loading..."))
+    
     # Show a progress notification
     #showNotification("Running model calculations...", type = "message", duration = NULL, id = "calc_progress")
     
@@ -924,8 +955,16 @@ server <- function(input, output, session) {
       
     )
     
+    
     # Call the dec_tree function with the input parameters
     results <- dec_tree(params)
+    
+    
+    # Delay execution to actually show the button is loading
+    later::later(function() {
+      session$sendCustomMessage("removeLoadingClass", "run")
+      session$sendCustomMessage("changeButtonText", list(id = "run", text = "Compute"))
+    }, delay = 1)
     
     # Return the results
     results
@@ -973,6 +1012,7 @@ server <- function(input, output, session) {
       geom_vline(xintercept=0, colour = "darkgrey") +
       geom_textabline(slope = input$will_pay_perDALY, intercept = -100, label = "Cost-Effectiveness Threshold",
                       color = "blue", hjust = 0.8, vjust = -0.3,linetype= 2, linewidth = 1.5, size = 5) 
+    
     
   })
 }
