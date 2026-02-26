@@ -10,6 +10,6 @@ The session is organised around three simple exercises plus one optional & more 
 - Deterministic sensitivity analysis
 - Probabilistic sensitivity analysis (optional)
 
-A pre-print of a paper making use of an expanded version of the model used in this tutorial can be found at https://www.medrxiv.org/content/10.1101/2024.05.14.24307355v1. 
+The paper making use of an expanded version of the model used in this tutorial can be found at https://www.thelancet.com/journals/lansea/article/PIIS2772-3682(25)00053-8/fulltext. 
 
 Please email any feedback, comments or errors to Cherry Lim at cherry.lim@ndm.ox.ac.uk.
