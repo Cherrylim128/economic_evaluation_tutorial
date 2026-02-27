@@ -1,18 +1,16 @@
 #'Anti-microbial resistance in LMIC- practical applications in R
 #'Ben S Cooper, Cherry Lim
 #'
-#'4. ShinyApp for the decision-tree model
+#'ShinyApp for the decision-tree model
 #'This script is written by Cherry Lim with helps from ChatGPT
 
 rm(list = ls())
 
-library(shiny)
-library(bslib)
-library(ggplot2)
-library(DT)
-library(dplyr)
-library(gtools)  # for rdirichlet
-library(scales)
+# install and load essential libraries
+load.lib<-c("shiny", "bslib", "ggplot2","DT","dplyr","gtools","scales") #gtools: dirichlet
+install.lib <- load.lib[!load.lib %in% installed.packages()]
+for(lib in install.lib) install.packages(lib,dependencies=TRUE)
+sapply(load.lib,require,character=TRUE)
 
 # ---------------------------
 # dec_tree() — decision tree
