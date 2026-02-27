@@ -503,21 +503,21 @@ ui <- fluidPage(
             
             h5("Patients with culture positive", style = "color:#0D47A1"),
             # p("Edit these Dirichlet alphas"),
-            numericInput("culpos_a1", "Probability of stepping down given if culture result is positive", value = 6.1, min = 0),
-            numericInput("culpos_a2", "Probability of stepping up given if culture result is positive", value = 39, min = 0),
-            numericInput("culpos_a3", "Probability of no change given if culture result is positive", value = 54.9, min = 0),
+            numericInput("culpos_a1", "Parameter to reflect probability of stepping down given if culture result is positive", value = 6.1, min = 0),
+            numericInput("culpos_a2", "Parameter to reflect probability of stepping up given if culture result is positive", value = 39, min = 0),
+            numericInput("culpos_a3", "Parameter to reflect probability of no change given if culture result is positive", value = 54.9, min = 0),
             hr(),
             
             h5("Health condition given has bacterial infection and no culture done", style = "color:#0D47A1"),
-            numericInput("bact_nocul_a1", "Probability that patient’s health condition deteriorates", value = 24, min = 0),
-            numericInput("bact_nocul_a2", "Probability that patient’s health condition improves", value = 60, min = 0),
-            numericInput("bact_nocul_a3", "Probability that patient’s health condition remains unchanged", value = 16, min = 0),
+            numericInput("bact_nocul_a1", "Parameter to reflect probability that patient’s health condition deteriorates", value = 24, min = 0),
+            numericInput("bact_nocul_a2", "Parameter to reflect probability that patient’s health condition improves", value = 60, min = 0),
+            numericInput("bact_nocul_a3", "Parameter to reflect probability that patient’s health condition remains unchanged", value = 16, min = 0),
             hr(),
             
             h5("Health condition given has no bacterial infection and no culture done", style = "color:#0D47A1"),
-            numericInput("nobact_nocul_a1", "Probability that patient’s health condition deteriorates", value = 7, min = 0),
-            numericInput("nobact_nocul_a2", "Probability that patient’s health condition improves", value = 37, min = 0),
-            numericInput("nobact_nocul_a3", "Probability that patient’s health condition remains unchanged", value = 56, min = 0),
+            numericInput("nobact_nocul_a1", "Parameter to reflect probability that patient’s health condition deteriorates", value = 7, min = 0),
+            numericInput("nobact_nocul_a2", "Parameter to reflect probability that patient’s health condition improves", value = 37, min = 0),
+            numericInput("nobact_nocul_a3", "Parameter to reflect probability that patient’s health condition remains unchanged", value = 56, min = 0),
             hr(),
           )
       )
@@ -553,15 +553,15 @@ ui <- fluidPage(
       div(style = "max-height:85vh; overflow-y:auto; padding-left: 12px;",
           wellPanel(
             h4("Changes in antibiotic therapy under different health conditions given culture result is negative", style = "color:#0D47A1"),
-            sliderInput("culneg_deter_stepup_alpha", "Probability of stepping up given patient’s health condition deteriorates", min = 1, max = 99, value = 70),
-            sliderInput("culneg_impro_stepdown_alpha", "Probability of stepping down given patient’s health condition improves", min = 1, max = 99, value = 80),
-            sliderInput("culneg_nocha_stepup_alpha", "Probability of stepping up given patient’s health condition remains unchanged", min = 1, max = 99, value = 10),
+            sliderInput("culneg_deter_stepup_alpha", "Probability of stepping up given patient’s health condition deteriorates (%)", min = 1, max = 99, value = 70),
+            sliderInput("culneg_impro_stepdown_alpha", "Probability of stepping down given patient’s health condition improves (%)", min = 1, max = 99, value = 80),
+            sliderInput("culneg_nocha_stepup_alpha", "Probability of stepping up given patient’s health condition remains unchanged (%)", min = 1, max = 99, value = 10),
             hr(),
             
             h4("Changes in antibiotic therapy under different health conditions given no culture was performed", style = "color:#0D47A1"),
-            sliderInput("cefneg_deter_stepup_alpha", "Probability of stepping up given patient’s health condition deteriorates", min = 1, max = 99, value = 90),
-            sliderInput("cefneg_impro_stepdown_alpha", "Probability of stepping down given patient’s health condition improves", min = 1, max = 99, value = 20),
-            sliderInput("cefneg_nocha_stepup_alpha", "Probability of stepping up given patient’s health condition remains unchanged", min = 1, max = 99, value = 70),
+            sliderInput("cefneg_deter_stepup_alpha", "Probability of stepping up given patient’s health condition deteriorates (%)", min = 1, max = 99, value = 90),
+            sliderInput("cefneg_impro_stepdown_alpha", "Probability of stepping down given patient’s health condition improves (%)", min = 1, max = 99, value = 20),
+            sliderInput("cefneg_nocha_stepup_alpha", "Probability of stepping up given patient’s health condition remains unchanged (%)", min = 1, max = 99, value = 70),
             hr(),
             
             h4("Cost inputs (USD)", style = "color:#0D47A1"),
